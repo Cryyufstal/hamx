@@ -4,9 +4,11 @@ import { useState, useEffect } from "react";
 
 interface ReferralSystemProps {
   userId: string;
+  initData?: string; // جعلها اختيارية
+  startParam?: string; // جعلها اختيارية
 }
 
-const ReferralSystem = ({ userId }: ReferralSystemProps) => {
+const ReferralSystem = ({ userId, initData, startParam }: ReferralSystemProps) => {
   const [invitedFriends, setInvitedFriends] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
 
@@ -16,7 +18,13 @@ const ReferralSystem = ({ userId }: ReferralSystemProps) => {
     if (storedInvitedFriends) {
       setInvitedFriends(JSON.parse(storedInvitedFriends));
     }
-  }, []);
+
+    // إذا كان هناك startParam، يتم إضافة المستخدم المدعو إلى القائمة
+    if (startParam) {
+      setInvitedFriends((prev) => [...prev, `User ${startParam}`]);
+      localStorage.setItem("invitedFriends", JSON.stringify([...invitedFriends, `User ${startParam}`]));
+    }
+  }, [startParam]);
 
   const copyReferralLink = () => {
     const referralLink = `https://t.me/monton_bot?start=ref${userId}`;
